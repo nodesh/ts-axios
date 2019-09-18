@@ -59,4 +59,16 @@ axios({
   }
 })
 
+axios({
+  method: 'post',
+  url: '/base/post',
+  data: {
+    bar: 'baz'
+  }
+})
 
+axios({
+  method: 'post',
+  url: '/base/buffer',
+  data: new Int32Array([21, 31])
+})
