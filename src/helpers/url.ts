@@ -1,4 +1,4 @@
-import { isDate, isPlainObject } from './util'
+import { isDate, isPlainObject, isURLSearchParams } from './util'
 
 interface URLOrigin {
   protocol: string
@@ -16,38 +16,49 @@ function encode(val: string) {
     .replace(/%5D/gi, ']')
 }
 
-export function buildURL(url: string, params?: any): string {
+export function buildURL(
+  url: string,
+  params?: any,
+  paramsSerializer?: (params: any) => string
+): string {
   if (!params) {
     return url
   }
 
-  const parts: string[] = []
+  let serializedParams
 
-  Object.keys(params).forEach(key => {
-    let val = params[key]
-    if (val === null || typeof val === 'undefined') {
-      return
-    }
+  if (paramsSerializer) {
+    serializedParams = paramsSerializer(params)
+  } else if (isURLSearchParams(params)) {
+    serializedParams = params.toString()
+  } else {
+    const parts: string[] = []
 
-    let values = []
-    if (Array.isArray(val)) {
-      values = val
-      key += '[]'
-    } else {
-      values = [val]
-    }
-
-    values.forEach(v => {
-      if (isDate(v)) {
-        v = v.toISOString()
-      } else if (isPlainObject(v)) {
-        v = JSON.stringify(v)
+    Object.keys(params).forEach(key => {
+      let val = params[key]
+      if (val === null || typeof val === 'undefined') {
+        return
       }
-      parts.push(`${encode(key)}=${encode(v)}`)
-    })
-  })
 
-  let serializedParams = parts.join('&')
+      let values = []
+      if (Array.isArray(val)) {
+        values = val
+        key += '[]'
+      } else {
+        values = [val]
+      }
+
+      values.forEach(v => {
+        if (isDate(v)) {
+          v = v.toISOString()
+        } else if (isPlainObject(v)) {
+          v = JSON.stringify(v)
+        }
+        parts.push(`${encode(key)}=${encode(v)}`)
+      })
+    })
+    serializedParams = parts.join('&')
+  }
 
   if (serializedParams) {
     const markIndex = url.indexOf('#')
