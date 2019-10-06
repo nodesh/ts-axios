@@ -14,6 +14,5 @@ export default function transform(
   fns.forEach(fn => {
     data = fn(data, headers)
   })
-
   return data
 }

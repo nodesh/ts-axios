@@ -20,11 +20,18 @@ export function isURLSearchParams(val: any): val is URLSearchParams {
   return typeof val !== 'undefined' && val instanceof URLSearchParams
 }
 
-export function extend<T, U>(to: T, from: U): T & U {
-  for (const key in from) {
-    ;(to as T & U)[key] = from[key] as any
+// export function extend<T, U>(to: T, from: U): T & U {
+//   for (const key in from) {
+//     ;(to as T & U)[key] = from[key] as any
+//   }
+//   return to as T & U
+// }
+
+export const extend = <T extends object, U extends object>(a: T, b: U): T & U => {
+  for (const key in b) {
+    ;(a as any)[key] = b[key]
   }
-  return to as T & U
+  return a as any
 }
 
 export function deepMerge(...objs: any[]): any {

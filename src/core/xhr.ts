@@ -10,8 +10,8 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
     const {
       data = null,
       url,
-      method = 'get',
-      headers,
+      method,
+      headers = {},
       responseType,
       timeout,
       cancelToken,
@@ -26,11 +26,11 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
 
     const request = new XMLHttpRequest()
 
-    request.open(method.toUpperCase(), url!, true)
+    request.open(method!.toUpperCase(), url!, true)
 
     configureRequest()
 
-    addEvent()
+    addEvents()
 
     processHeaders()
 
@@ -52,7 +52,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       }
     }
 
-    function addEvent(): void {
+    function addEvents(): void {
       request.onreadystatechange = function handleLoad() {
         if (request.readyState !== 4) {
           return
@@ -63,7 +63,8 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
         }
 
         const responseHeaders = parseHeaders(request.getAllResponseHeaders())
-        const responseData = responseType !== 'text' ? request.response : request.responseText
+        const responseData =
+          responseType && responseType !== 'text' ? request.response : request.responseText
         const response: AxiosResponse = {
           data: responseData,
           status: request.status,
@@ -72,18 +73,17 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
           config,
           request
         }
-
         handleResponse(response)
       }
 
-      // 处理网络错误
       request.onerror = function handleError() {
         reject(createError('Network Error', config, null, request))
       }
 
-      // 处理请求超时
       request.ontimeout = function handleTimeout() {
-        reject(createError(`Timeout of ${timeout} ms exceeded`, config, 'ECONNABORTED', request))
+        reject(
+          createError(`Timeout of ${config.timeout} ms exceeded`, config, 'ECONNABORTED', request)
+        )
       }
 
       if (onDownloadProgress) {
@@ -122,10 +122,17 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
 
     function processCancel(): void {
       if (cancelToken) {
-        cancelToken.promise.then(reason => {
-          request.abort()
-          reject(reason)
-        })
+        cancelToken.promise
+          .then(reason => {
+            request.abort()
+            reject(reason)
+          })
+          .catch(
+            /* istanbul ignore next */
+            () => {
+              // do nothing
+            }
+          )
       }
     }
 

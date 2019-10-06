@@ -3,7 +3,6 @@ import { deepMerge, isPlainObject } from '../helpers/util'
 
 const strats = Object.create(null)
 
-// 默认合并策略
 function defaultStrat(val1: any, val2: any): any {
   return typeof val2 !== 'undefined' ? val2 : val1
 }
@@ -59,8 +58,8 @@ export default function mergeConfig(
   }
 
   function mergeField(key: string): void {
-    const start = strats[key] || defaultStrat
-    config[key] = start(config1[key], config2![key])
+    const strat = strats[key] || defaultStrat
+    config[key] = strat(config1[key], config2![key])
   }
 
   return config

@@ -43,6 +43,7 @@ export default class Axios {
     }
 
     config = mergeConfig(this.defaults, config)
+    config.method = config.method.toLowerCase()
 
     const chain: PromiseChain<any>[] = [
       {
@@ -97,7 +98,7 @@ export default class Axios {
     return this._requestMethodWithData('patch', url, data, config)
   }
 
-  getUri(config: AxiosRequestConfig): string {
+  getUri(config?: AxiosRequestConfig): string {
     config = mergeConfig(this.defaults, config)
     return transformURL(config)
   }
@@ -109,7 +110,7 @@ export default class Axios {
   ): AxiosPromise {
     return this.request(
       Object.assign(config || {}, {
-        method: method,
+        method,
         url
       })
     )
@@ -123,7 +124,7 @@ export default class Axios {
   ): AxiosPromise {
     return this.request(
       Object.assign(config || {}, {
-        method: method,
+        method,
         url,
         data
       })
