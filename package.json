@@ -1,18 +1,23 @@
 {
   "name": "ts-axios",
-  "version": "0.0.3",
-  "description": "",
-  "keywords": [],
+  "version": "0.0.4",
+  "description": "Typescript 实现 axios",
+  "keywords": [
+    "axios",
+    "typescript",
+    "ts",
+    "ts-axios"
+  ],
   "main": "dist/axios.umd.js",
   "module": "dist/axios.es5.js",
   "typings": "dist/types/index.d.ts",
   "files": [
     "dist"
   ],
-  "author": "李登洲 <lidengzhou@idcmatic.com>",
+  "author": "nodesh <1096408961@qq.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/nodesh/ts-axios"
   },
   "license": "MIT",
   "engines": {
@@ -34,7 +39,7 @@
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
     "precommit": "lint-staged",
     "travis-deploy-once": "travis-deploy-once",
-    "release": "export GITHUB_TOKEN=1ea7b70e8f19b1acabc4bd74c2eb67a3f400c755 && release-it"
+    "release": "export GITHUB_TOKEN=8b9a56f356682362e9550fcab37dda2ea81e222e && release-it"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
@@ -142,11 +147,11 @@
     "webpack-hot-middleware": "^2.25.0"
   },
   "release-it": {
-    "tokenRef": "1ea7b70e8f19b1acabc4bd74c2eb67a3f400c755",
+    "tokenRef": "8b9a56f356682362e9550fcab37dda2ea81e222e",
     "github": {
       "release": true,
       "assets": [
-        "dist/*.js"
+        "dist/**/*"
       ]
     },
     "git": {
